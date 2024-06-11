@@ -1,4 +1,6 @@
 #!/bin/bash
+# Argument 1    Name of tarball (excluding common name, date and file extension)
+
 storage_name=$1
 
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -6,13 +8,13 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 current_dir=${PWD##*/}              # to assign to a variable
 current_dir=${current_dir:-/}       # to correct for the case where PWD=/
 
-storage_dir="$HOME/Documents/work/sunset-storage/"
+storage_dir="$sunset_storage_dir"
+
 YYYY=$(date +"%Y")
 MM=$(date +"%m")
 DD=$(date +"%d")
 HH=$(date +"%H")
 mm=$(date +"%M")
-
 storage_path="$storage_dir""sunset_$YYYY-$MM-$DD""_$HH$mm""_$storage_name.tar.gz"
 
 tar --exclude="*.git*" -zcvf $storage_path "../$current_dir/"

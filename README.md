@@ -46,6 +46,7 @@ Must be run at the root of the `sunset_code` directory that you are working in. 
 For easiest usage, use the alias:
 
 ```bash
-alias sunset-tar='~/Documents/work/GitHub/sunset-tools/sunset-tarball/sunset-tarball.sh'
+export sunset_storage_dir="<path to sunset-storage dir>"
+alias sunset-tar='<path to this repo>/sunset-tarball/sunset-tarball.sh'
 ```
 
