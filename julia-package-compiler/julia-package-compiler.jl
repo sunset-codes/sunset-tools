@@ -1,7 +1,9 @@
-# ARGUMENTS:
-# ARGS[1]       package #1 str
-# ARGS[2]       package #2 str
-# ARGS[...]     ...
+"""
+ARGUMENTS:
+ARGS[1]       package #1 str
+ARGS[2]       package #2 str
+ARGS[...]     ...
+"""
 
 packages = ARGS
 

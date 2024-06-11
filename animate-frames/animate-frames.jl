@@ -7,15 +7,15 @@ generation of movies from any group of images via the
 VideoIO.jl Julia package
 
 Arguments:
-1       path to images directory
-2       fps
+1       path to images directory. Defaults to `.../aniamte-frames/frames/`
+2       fps. Defaults to 1
 3       (optional) output video file name. Defaults to "video_<DATE+TIME>.mp4"
 """
 
 using VideoIO, Dates, ProgressMeter
 
 
-arg_images_dir = "."
+arg_images_dir = joinpath(@__DIR__, "frames")
 arg_fps = 1
 arg_video_path = string("video_", Dates.now(), ".mp4")
 if length(ARGS) < 2
