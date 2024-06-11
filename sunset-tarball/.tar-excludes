@@ -1,0 +1,6 @@
+*paraview_files/*
+
+*data_out/field*
+*data_out/flame*
+
+*.git*
