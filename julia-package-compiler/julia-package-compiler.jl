@@ -1,15 +1,11 @@
 # ARGUMENTS:
-# ARGS[1]       output directory
-# ARGS[2]       package #1 str
-# ARGS[3]       package #2 str
+# ARGS[1]       package #1 str
+# ARGS[2]       package #2 str
 # ARGS[...]     ...
 
-file_out_dir = ARGS[1]
-packages = ARGS[2:end]
+packages = ARGS
 
-if !isdir(file_out_dir)
-    throw(ArgumentError("First argument is not a directory"))
-elseif length(packages) == 0
+if length(packages) == 0
     throw(ArgumentError("At least one package name required"))
 end
 # Julia will also throw if any of the packages are not in the project
@@ -18,7 +14,7 @@ println("Packages to compile are", packages)
 
 using PackageCompiler
 
-file_out_path = joinpath(file_out_dir, "sysimages")
+file_out_path = joinpath(@__DIR__, "sysimages")
 file_out_name = string(join(packages, "_"), ".so")
 file_out_full = joinpath(file_out_path, file_out_name)
 
