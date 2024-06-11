@@ -1,7 +1,23 @@
 # sunset-tools
 Tools to help use @jrcking 's sunset code, most of which are written in Julia.
 
-## Contains
+## Prerequisites
+- Linux
+  - If you're on Windows you can use WSL
+- Bash on linux
+- Julia 1.10.2
+  - You should probably install this via [juliaup](https://github.com/JuliaLang/juliaup)
+- A bunch of Julia packages which are easy to install:
+  - `Plots.jl`
+  - `PyPlot.jl`
+  - `VideoIO.jl`
+  - `ProgressMeter.jl`
+  - `PackageCompiler.jl`
+  - `Printf.jl`
+  - `Dates.jl`
+  - `LaTeXStrings.jl`
+
+## This repo contains
 - `animate-frames.jl`
 - `init_flame_file-creator.jl`
 - `julia-package-compiler.jl`
