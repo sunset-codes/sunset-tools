@@ -2,11 +2,11 @@
 Tools to help use @jrcking 's sunset code, most of which are written in Julia.
 
 ## Contains
-- animate-frames.jl
-- init_flame_file-creator.jl
-- julia-package-compiler.jl
-- plot-nodes.jl
-- sunset-tarball.sh
+- `animate-frames.jl`
+- `init_flame_file-creator.jl`
+- `julia-package-compiler.jl`
+- `plot-nodes.jl`
+- `sunset-tarball.sh`
 
 Documentation for each of these are given below. Arguments each script takes are given in the script files.
 
