@@ -50,3 +50,10 @@ export sunset_storage_dir="<path to sunset-storage dir>"
 alias sunset-tar='<path to this repo>/sunset-tarball/sunset-tarball.sh'
 ```
 
+To unpack the tarball, run the command:
+
+```bash
+tar -zxvf <path to tarball>
+```
+
+in the location you want the `sunset_code` directory to appear.
