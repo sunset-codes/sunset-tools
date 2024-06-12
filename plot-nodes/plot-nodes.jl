@@ -18,9 +18,7 @@ IPART fields:
 
 println("starting Julia and modules")
 
-using Plots
-
-using LaTeXStrings
+using Plots, Dates
 
 pyplot()
 
@@ -118,7 +116,7 @@ yt1 = round_step(y_limits[1], tick_step)
 
 node_plot = scatter(
     aspect_ratio = :equal, legend = arg_show_legend,
-    xlimits = x_limits, ylimits = y_limits, xlabel = L"x", ylabel = L"y",
+    xlimits = x_limits, ylimits = y_limits, xlabel = "\$x\$", ylabel = "\$y\$",
     size = (1000, 750),
     xticks = xt1:tick_step:x_limits[2], yticks = yt1:tick_step:y_limits[2],
     xtickfontrotation = 90.0
