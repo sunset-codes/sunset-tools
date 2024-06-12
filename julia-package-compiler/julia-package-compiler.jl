@@ -21,7 +21,11 @@ file_out_name = string(join(packages, "_"), ".so")
 file_out_full = joinpath(file_out_path, file_out_name)
 
 println("Writing sysimage to", file_out_full)
-create_sysimage(packages, sysimage_path = file_out_full)
+create_sysimage(
+    packages,
+    sysimage_path = file_out_full,
+    include_transitive_dependencies = false,
+)
 
 printstyled("\nEnd of compilation\n", color = :green)
 
