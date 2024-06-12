@@ -15,10 +15,9 @@ MM=$(date +"%m")
 DD=$(date +"%d")
 HH=$(date +"%H")
 mm=$(date +"%M")
-storage_path="$storage_dir""sunset_$YYYY-$MM-$DD""_$HH$mm""_$storage_name.tar.gz"
-
-tar --exclude="*.git*" -zcvf $storage_path "../$current_dir/"
 
 storage_path="$storage_dir""sunset_$YYYY-$MM-$DD""_$HH$mm""_NO-DATA_$storage_name.tar.gz"
-
 tar --exclude-from="$script_dir/.tar-excludes" -zcvf $storage_path "../$current_dir/"
+
+storage_path="$storage_dir""sunset_$YYYY-$MM-$DD""_$HH$mm""_$storage_name.tar.gz"
+tar --exclude="*.git*" -zcvf $storage_path "../$current_dir/"

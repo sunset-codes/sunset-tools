@@ -1,10 +1,11 @@
 """
 Arguments:
 ARGS[1] = IPART file path
-ARGS[2] = number of lines to skip at the start of IPART
-ARGS[3] = plot finite difference nodes?
-ARGS[4] = (optional) maximum number of nodes to read from IPART file 
-ARGS[5] = (optional) show legend?
+ARGS[2] = Run in interactive mode or not?
+ARGS[3] = number of lines to skip at the start of IPART
+ARGS[4] = plot finite difference nodes?
+ARGS[5] = (optional) maximum number of nodes to read from IPART file 
+ARGS[6] = (optional) show legend?
 
 IPART fields:
 1     x
@@ -26,26 +27,27 @@ pyplot()
 println("starting script")
 
 arg_node_file = ARGS[1]
+arg_interactive_mode = ARGS[2]
 arg_line_skip = -1
 arg_plot_fd_nodes = true
 arg_max_nodes = -1
 arg_show_legend = true
 
-if length(ARGS) < 3
+if length(ARGS) < 4
     printnln("ERROR: NOT ENOUGH ARGUMENTS")
     exit()
 else
     arg_node_file = ARGS[1]
-    arg_line_skip = tryparse(Int64, ARGS[2])
-    arg_plot_fd_nodes = tryparse(Bool, ARGS[3])
-    if length(ARGS) == 4
-        arg_max_nodes = tryparse(Int64, ARGS[4])
+    arg_interactive_mode = tryparse(Bool, ARGS[2])
+    arg_line_skip = tryparse(Int64, ARGS[3])
+    arg_plot_fd_nodes = tryparse(Bool, ARGS[4])
+    if length(ARGS) >= 4
+        arg_max_nodes = tryparse(Int64, ARGS[5])
         println("max nodes set as: ", arg_max_nodes)
-    elseif length(ARGS) >= 5
-        arg_max_nodes = tryparse(Int64, ARGS[4])
-        println("max nodes set as: ", arg_max_nodes)
-        arg_show_legend = tryparse(Bool, ARGS[5])
-        println(arg_show_legend ? "" : "not ", "showing node legend")
+        if length(ARGS) >= 5
+            arg_show_legend = tryparse(Bool, ARGS[6])
+            println(arg_show_legend ? "" : "not ", "showing node legend")
+        end
     end
 end
 
@@ -109,10 +111,17 @@ frame_margin = 0.2 * max(x_size, y_size)
 x_limits = (x_min - frame_margin, x_max + frame_margin)
 y_limits = (y_min - frame_margin, y_max + frame_margin)
 
+tick_step = 0.2
+round_step(x, step) = round(x / step) * step
+xt1 = round_step(x_limits[1], tick_step)
+yt1 = round_step(y_limits[1], tick_step)
+
 node_plot = scatter(
     aspect_ratio = :equal, legend = arg_show_legend,
     xlimits = x_limits, ylimits = y_limits, xlabel = L"x", ylabel = L"y",
-    size = (1000, 750)
+    size = (1000, 750),
+    xticks = xt1:tick_step:x_limits[2], yticks = yt1:tick_step:y_limits[2],
+    xtickfontrotation = 90.0
 )
 for node_type_set in node_type_sets
     if length(node_type_set) == 0
@@ -131,8 +140,12 @@ for node_type_set in node_type_sets
     )
 end
 
-display(node_plot)
+if arg_interactive_mode
+    display(node_plot)
 
-println("press Enter to close Julia and the plot")
-readline()
-exit()
+    println("press Enter to close Julia and the plot")
+    readline()
+    exit()
+else
+    savefig(node_plot, "plot-nodes.png")
+end
