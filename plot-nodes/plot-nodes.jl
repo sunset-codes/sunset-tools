@@ -1,19 +1,25 @@
 """
 Arguments:
-ARGS[1] = IPART file path
-ARGS[2] = Run in interactive mode or not?
-ARGS[3] = number of lines to skip at the start of IPART
-ARGS[4] = plot finite difference nodes?
-ARGS[5] = (optional) maximum number of nodes to read from IPART file 
-ARGS[6] = (optional) show legend?
+ARGS[1] .   . IPART file path
+ARGS[2] .   . number of lines to skip at the start of IPART
+ARGS[3] .   . plot finite difference nodes?
+ARGS[4] .   . (optional) maximum number of nodes to read from IPART file 
+ARGS[5] .   . (optional) show legend?
 
 IPART fields:
-1     x
-2     y
-3     node type
-4     n.x
-5     n.y
-6     s (AKA dxp)
+1   x
+2   y
+3   node type
+4   n.x
+5   n.y
+6   s
+
+nodes_1xxxx fields:
+1   x
+2   y
+3   s
+4   h
+5   node type
 """
 
 println("starting Julia and modules")
@@ -25,34 +31,36 @@ pyplot()
 println("starting script")
 
 arg_node_file = ARGS[1]
-arg_interactive_mode = ARGS[2]
 arg_line_skip = -1
 arg_plot_fd_nodes = true
 arg_max_nodes = -1
 arg_show_legend = true
 
-if length(ARGS) < 4
+if length(ARGS) < 3
     printnln("ERROR: NOT ENOUGH ARGUMENTS")
     exit()
 else
     arg_node_file = ARGS[1]
-    arg_interactive_mode = tryparse(Bool, ARGS[2])
-    arg_line_skip = tryparse(Int64, ARGS[3])
-    arg_plot_fd_nodes = tryparse(Bool, ARGS[4])
+    arg_line_skip = tryparse(Int64, ARGS[2])
+    arg_plot_fd_nodes = tryparse(Bool, ARGS[3])
     if length(ARGS) >= 4
-        arg_max_nodes = tryparse(Int64, ARGS[5])
+        arg_max_nodes = tryparse(Int64, ARGS[4])
         println("max nodes set as: ", arg_max_nodes)
         if length(ARGS) >= 5
-            arg_show_legend = tryparse(Bool, ARGS[6])
+            arg_show_legend = tryparse(Bool, ARGS[5])
             println(arg_show_legend ? "" : "not ", "showing node legend")
         end
     end
 end
 
-println("parsing node file: ", arg_node_file)
+printstyled(string("arg_node_file:         ", arg_node_file, "\n"), color = :yellow)
+printstyled(string("arg_line_skip:         ", arg_line_skip, "\n"), color = :yellow)
+printstyled(string("arg_plot_fd_nodes:     ", arg_plot_fd_nodes, "\n"), color = :yellow)
+printstyled(string("arg_max_nodes:         ", arg_max_nodes, "\n"), color = :yellow)
+printstyled(string("arg_show_legend:       ", arg_show_legend, "\n"), color = :yellow)
+
 
 node_set = Vector{Float64}[]
-
 open(arg_node_file) do f
     for (i_line, line) in enumerate(eachline(f))
         # Store each field as a float even though node types are ints
@@ -66,9 +74,9 @@ open(arg_node_file) do f
     end
 end
 
-println("inserting extra finite difference nodes")
 
 if arg_plot_fd_nodes
+    println("inserting extra finite difference nodes")
     for node in node_set
         if node[3] in [999.0, -1.0]
             continue
@@ -138,12 +146,12 @@ for node_type_set in node_type_sets
     )
 end
 
-if arg_interactive_mode
+if isinteractive()
     display(node_plot)
 
     println("press Enter to close Julia and the plot")
     readline()
     exit()
 else
-    savefig(node_plot, "plot-nodes.png")
+    savefig(node_plot, "plot-nodes_$(Dates.now()).png")
 end
