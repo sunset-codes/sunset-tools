@@ -1,7 +1,14 @@
 """
 Creates `init_flame.in` files from a selected `sunset_code:oned` branch run.
 
-Output fields are:
+Script args:
+1   input flame file dir
+2   frame
+3   n_slots 
+4   output `init_flame.in` dir
+5   output file name (just `init_flame.in` atm)
+
+flame file output fields are:
 1   x
 2   y
 3   u
@@ -20,35 +27,42 @@ using Dates, Printf
 
 println("Parsing args")
 
-arg_flame_file_path = ARGS[1]
-arg_out_dir = ARGS[2]
+arg_flame_file_dir = ARGS[1]
+arg_frame = 1
+arg_n_slots = 1
+arg_out_dir = ARGS[4]
 arg_out_name = "init_flame.in"
-
-if !isfile(arg_flame_file_path)
-    throw(ArgumentError("Flame file not found at location given"))
-elseif basename(arg_flame_file_path)[1:5] != "flame"
-    throw(ArgumentError("File given not a flame file"))
-end
 
 if !isdir(arg_out_dir)
     throw(ArgumentError("Output directory not found"))
 elseif isfile(joinpath(arg_out_dir, arg_out_name))
-    arg_out_name = string(arg_out_name, ".", Dates.now())
+    nice_dt = replace(string(Dates.now()), ":" => "-")
+    arg_out_name = string(arg_out_name, ".", nice_dt)
 end
 
-println("Reading from flame file: ", arg_flame_file_path)
+arg_frame = tryparse(Int64, ARGS[2])
+arg_n_slots = tryparse(Int64, ARGS[3])
+
+flame_files = [
+    joinpath(arg_flame_file_dir, string("flame", 10000 + i_slot, "_", arg_frame))
+    for i_slot in 0:(arg_n_slots - 1)
+]
+println("Reading from flame files: ", flame_files)
 data_all = Vector{Float64}[]
 line_length = -1
-for line in eachline(arg_flame_file_path)
-    line_strings = filter(str -> str != "", split(line, " "))
-    line_vals = tryparse.(Float64, line_strings)
-    # println(length(line_vals), " \t", line_vals)
-    if length(line_vals) != line_length && line_length != -1
-        throw(ArgumentError("Line length varying, inconsistent file data"))
-    elseif line_length == -1
-        global line_length = length(line_vals)
+
+for flame_file in flame_files
+    for line in eachline(flame_file)
+        line_strings = filter(str -> str != "", split(line, " "))
+        line_vals = tryparse.(Float64, line_strings)
+        # println(length(line_vals), " \t", line_vals)
+        if length(line_vals) != line_length && line_length != -1
+            throw(ArgumentError("Line length varying, inconsistent file data"))
+        elseif line_length == -1
+            global line_length = length(line_vals)
+        end
+        push!(data_all, line_vals)
     end
-    push!(data_all, line_vals)
 end
 
 println("Writing to file: ", joinpath(arg_out_dir, arg_out_name))
@@ -69,6 +83,3 @@ end
 
 printstyled("\nEnd of script. \n"; color = :green)
 
-# print("Press any key to exit.\n")
-# readline()
-# exit()
