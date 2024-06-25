@@ -1,5 +1,5 @@
 # sunset-tools
-Tools to help use @jrcking 's sunset code, most of which are written in Julia.
+Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-flames) code. Written primarily in Julia and bash.
 
 ## Prerequisites
 - Linux
