@@ -16,8 +16,16 @@ DD=$(date +"%d")
 HH=$(date +"%H")
 mm=$(date +"%M")
 
-storage_path="$storage_dir""sunset_$YYYY-$MM-$DD""_$HH$mm""_NO-DATA_$storage_name.tar.gz"
-tar --exclude-from="$script_dir/.tar-excludes" -zcvf $storage_path "../$current_dir/"
+dt="$YYYY-$MM-$DD""_$HH$mm"
 
-storage_path="$storage_dir""sunset_$YYYY-$MM-$DD""_$HH$mm""_$storage_name.tar.gz"
-tar --exclude="*.git*" -zcvf $storage_path "../$current_dir/"
+# Skeleton tarball with none of the data inside, just:
+# The code used (source, executables, object files)
+# Node discretisation
+# Control parameters
+# Docs
+storage_path="${storage_dir}sunset_${dt}_NO-DATA_${storage_name}.tar.gz"
+tar --exclude-from="${script_dir}/.tar-excludes" -zcvf $storage_path "../${current_dir}/"
+
+# Full tarball containing everything
+storage_path="${storage_dir}sunset_${dt}_${storage_name}.tar.gz"
+tar --exclude="*.git*" -zcvf $storage_path "../${current_dir}/"
