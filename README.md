@@ -5,7 +5,7 @@ Tools to help use @jrcking 's sunset code, most of which are written in Julia.
 - Linux
   - If you're on Windows you can use WSL
 - Bash on linux
-- Julia 1.10.2
+- Julia 1.10
   - You should probably install this via [juliaup](https://github.com/JuliaLang/juliaup)
 - A bunch of Julia packages which are easy to install:
   - `Plots.jl`
