@@ -21,12 +21,13 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
 Oh and you should probably install [sunset-flames](https://github.com/sunset-codes/sunset-flames), as this repo is just a tool set for that CFD software.
 
 ## This repo contains
-- `animate-frames.jl`
-- `init_flame_file-creator.jl`
-- `julia-package-compiler.jl`
-- `node-resolution.jl`
-- `plot-nodes.jl`
-- `sunset-tarball.sh`
+- [`animate-frames.jl`](#animate-framesjl)
+- [`init_flame_file-creator.jl`](#init_flame_file-creatorjl)
+- [`julia-package-compiler.jl`](#julia-package-compilerjl)
+- [`node-resolution.jl`](#node-resolutionjl)
+- [`plot-nodes.jl`](#plot-nodesjl)
+- [`sunset-tarball.sh`](#sunset-tarballsh)
+
 
 Documentation for each of these are given below. Arguments each script takes are given in the script files.
 
@@ -83,7 +84,7 @@ An interactive script for finding appropriate resolution parameters before gener
 
 Currently only case 5 is implemented for a quasi 1D laminar flame.
 
-Results from this script can be verified using the [`plot-nodes.jl`](#plot-nodes.jl) script.
+Results from this script can be verified using the [`plot-nodes.jl`](#plot-nodesjl) script.
 
 ### Usage
 This script is best used differently to a typical julia script. Instead what we do is enter an interactive julia session (called the REPL) via:
