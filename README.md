@@ -1,6 +1,30 @@
 # sunset-tools
 Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-flames) code. Written primarily in Julia and bash.
 
+## Table of Contents
+- [sunset-tools](#sunset-tools)
+  - [Table of Contents](#table-of-contents)
+  - [Installation + Prerequisites](#installation--prerequisites)
+  - [General Instructions](#general-instructions)
+  - [`animate-frames.jl`](#animate-framesjl)
+    - [Description](#description)
+    - [Usage](#usage)
+  - [`init_flame_file-creator.jl`](#init_flame_file-creatorjl)
+    - [Description](#description-1)
+    - [Usage](#usage-1)
+  - [`julia-package-compiler.jl`](#julia-package-compilerjl)
+    - [Description](#description-2)
+    - [Usage](#usage-2)
+  - [`node-resolution.jl`](#node-resolutionjl)
+    - [Description](#description-3)
+    - [Usage](#usage-3)
+  - [`plot-nodes.jl`](#plot-nodesjl)
+    - [Description](#description-4)
+    - [Usage](#usage-4)
+  - [`sunset-tarball.sh`](#sunset-tarballsh)
+    - [Description](#description-5)
+    - [Usage](#usage-5)
+
 ## Installation + Prerequisites
 - Linux
   - If you're on Windows you can use WSL
@@ -20,15 +44,7 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
 
 Oh and you should probably install [sunset-flames](https://github.com/sunset-codes/sunset-flames), as this repo is just a tool set for that CFD software.
 
-## This repo contains
-- [`animate-frames.jl`](#animate-framesjl)
-- [`init_flame_file-creator.jl`](#init_flame_file-creatorjl)
-- [`julia-package-compiler.jl`](#julia-package-compilerjl)
-- [`node-resolution.jl`](#node-resolutionjl)
-- [`plot-nodes.jl`](#plot-nodesjl)
-- [`sunset-tarball.sh`](#sunset-tarballsh)
-
-
+## General Instructions
 Documentation for each of these are given below. Arguments each script takes are given in the script files.
 
 To run a bash file, do:
@@ -90,7 +106,7 @@ Results from this script can be verified using the [`plot-nodes.jl`](#plot-nodes
 This script is best used differently to a typical julia script. Instead what we do is enter an interactive julia session (called the REPL) via:
 
 ```bash
-julia
+$ julia
 ```
 
 and the run the commands:
@@ -99,6 +115,7 @@ and the run the commands:
 julia> using Revise   # Loads the Revise package, which lets us alter and use julia scripts on-the-fly
 
 julia> includet("node_resolution/node_resolution.jl")  # Runs the `node-resolution.jl` julia script
+
 ```
 
 Note that this runs the `node-resolution.jl` script, but nothing executes because all of the useful functionality is held in julia functions! To use them we simply run these functions in the REPL, e.g.:
