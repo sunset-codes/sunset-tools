@@ -12,18 +12,21 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
   - [`init_flame_file-creator.jl`](#init_flame_file-creatorjl)
     - [Description](#description-1)
     - [Usage](#usage-1)
-  - [`julia-package-compiler.jl`](#julia-package-compilerjl)
+  - [`IPART-to-vtu.jl`](#ipart-to-vtujl)
     - [Description](#description-2)
     - [Usage](#usage-2)
-  - [`node-resolution.jl`](#node-resolutionjl)
+  - [`julia-package-compiler.jl`](#julia-package-compilerjl)
     - [Description](#description-3)
     - [Usage](#usage-3)
-  - [`plot-nodes.jl`](#plot-nodesjl)
+  - [`node-resolution.jl`](#node-resolutionjl)
     - [Description](#description-4)
     - [Usage](#usage-4)
-  - [`sunset-tarball.sh`](#sunset-tarballsh)
+  - [`plot-nodes.jl`](#plot-nodesjl)
     - [Description](#description-5)
     - [Usage](#usage-5)
+  - [`sunset-tarball.sh`](#sunset-tarballsh)
+    - [Description](#description-6)
+    - [Usage](#usage-6)
 
 ## Installation + Prerequisites
 - Linux
@@ -75,6 +78,13 @@ No extra info yet.
 ## `init_flame_file-creator.jl`
 ### Description
 Takes the output `data_out/flame...` data from a 1D SUNSET flame simulation and turns it into a `init_flame.in` file.
+
+### Usage
+No extra info yet.
+
+## `IPART-to-vtu.jl`
+### Description
+Takes an IPART file as input from a sunset code and turns it into an xml 'unstructured node set' file that paraview can read.
 
 ### Usage
 No extra info yet.
