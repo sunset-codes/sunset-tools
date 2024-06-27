@@ -1,7 +1,7 @@
 # sunset-tools
 Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-flames) code. Written primarily in Julia and bash.
 
-## Prerequisites
+## Installation + Prerequisites
 - Linux
   - If you're on Windows you can use WSL
 - Bash on linux
@@ -17,6 +17,8 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
   - `Printf.jl`
   - `Dates.jl`
   - `LaTeXStrings.jl`
+
+Oh and you should probably install [sunset-flames](https://github.com/sunset-codes/sunset-flames), as this repo is just a tool set for that CFD software.
 
 ## This repo contains
 - `animate-frames.jl`
