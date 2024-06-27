@@ -8,6 +8,7 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
 - Julia 1.10
   - You should probably install this via [juliaup](https://github.com/JuliaLang/juliaup)
 - A bunch of Julia packages which are easy to install:
+  - `Revise.jl`
   - `Plots.jl`
   - `PyPlot.jl`
   - `VideoIO.jl`
@@ -21,6 +22,7 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
 - `animate-frames.jl`
 - `init_flame_file-creator.jl`
 - `julia-package-compiler.jl`
+- `node-resolution.jl`
 - `plot-nodes.jl`
 - `sunset-tarball.sh`
 
@@ -72,6 +74,40 @@ Note that the usage of these precompiled package sysimages only makes scripts *s
 
 ### Usage
 No extra info yet.
+
+## `node-resolution.jl`
+### Description
+An interactive script for finding appropriate resolution parameters before generating a node set.
+
+Currently only case 5 is implemented for a quasi 1D laminar flame.
+
+Results from this script can be verified using the [`plot-nodes.jl`](#plot-nodes.jl) script.
+
+### Usage
+This script is best used differently to a typical julia script. Instead what we do is enter an interactive julia session (called the REPL) via:
+
+```bash
+julia
+```
+
+and the run the commands:
+
+```julia
+julia> using Revise   # Loads the Revise package, which lets us alter and use julia scripts on-the-fly
+
+julia> includet("node_resolution/node_resolution.jl")  # Runs the `node-resolution.jl` julia script
+```
+
+Note that this runs the `node-resolution.jl` script, but nothing executes because all of the useful functionality is held in julia functions! To use them we simply run these functions in the REPL, e.g.:
+
+```julia
+julia> dxmin = 1 / 500
+0.002
+
+julia> sunset_resolution_case_5(-0.5:0.01:0.5, dxmin * 10, dxmin, 0.15, 0.00; b0 = 4.0, b1 = 80.0)
+```
+
+Because we are in an interactive environment, not only will this function return a resolution array, it will also plot the resolution (and other relevant values, as used in sunset-flames `source/gen/datclass.f90` script) against x. This plotting is incredibly useful to quickly modify the input parameters (e.g. b0, b1) to find values which best suit our needs.
 
 ## `plot-nodes.jl`
 ### Description
