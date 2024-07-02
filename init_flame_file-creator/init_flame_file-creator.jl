@@ -1,12 +1,13 @@
 """
-Creates `init_flame.in` files from a selected `sunset_code:oned` branch run.
+Creates `init_flame.in` files from a selected `sunset_code:oned` branch run. This stitches
+the flame files for each mpi process into a single init_flame file.
 
 Script args:
 1   input flame file dir
 2   frame
 3   n_slots 
 4   output `init_flame.in` dir
-5   output file name (just `init_flame.in` atm)
+# 5   output file name (just `init_flame.in` atm)
 
 flame file output fields are:
 1   x
