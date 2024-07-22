@@ -48,7 +48,7 @@ All the above!
 
 println("starting Julia and modules")
 
-using Dates, Printf, Random, Dates
+using Dates, Printf, Random
 
 include(joinpath(@__DIR__, "vtu-strings.jl"))
 
@@ -319,7 +319,7 @@ for i_frame in arg_frame_start:arg_frame_end
     out_file_name = @sprintf "%04i" i_frame - 1
     out_file_name = string("ben_LAYER", out_file_name, ".vtu")
     out_file_path = joinpath(arg_out_dir, out_file_name)
-    println("Writing nodes to ", out_file_path," file")
+    println("Writing nodes to ", out_file_path)
     open(out_file_path, "w") do out_file
         # Beginning stuff
         write(out_file, vtu_start)

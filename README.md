@@ -15,18 +15,21 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
   - [`IPART-to-vtu.jl`](#ipart-to-vtujl)
     - [Description](#description-2)
     - [Usage](#usage-2)
-  - [`julia-package-compiler.jl`](#julia-package-compilerjl)
+  - [`file-to-vtu.jl`](#file-to-vtujl)
     - [Description](#description-3)
     - [Usage](#usage-3)
-  - [`node-resolution.jl`](#node-resolutionjl)
+  - [`julia-package-compiler.jl`](#julia-package-compilerjl)
     - [Description](#description-4)
     - [Usage](#usage-4)
-  - [`plot-nodes.jl`](#plot-nodesjl)
+  - [`node-resolution.jl`](#node-resolutionjl)
     - [Description](#description-5)
     - [Usage](#usage-5)
-  - [`sunset-tarball.sh`](#sunset-tarballsh)
+  - [`plot-nodes.jl`](#plot-nodesjl)
     - [Description](#description-6)
     - [Usage](#usage-6)
+  - [`sunset-tarball.sh`](#sunset-tarballsh)
+    - [Description](#description-7)
+    - [Usage](#usage-7)
 
 ## Installation + Prerequisites
 - Linux
@@ -43,6 +46,7 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
   - `PackageCompiler.jl`
   - `Printf.jl`
   - `Dates.jl`
+  - `Random.jl`
   - `LaTeXStrings.jl`
 
 Oh and you should probably install [sunset-flames](https://github.com/sunset-codes/sunset-flames), as this repo is just a tool set for that CFD software.
@@ -88,6 +92,13 @@ Takes an IPART file as input from a sunset code and turns it into an xml 'unstru
 
 ### Usage
 No extra info yet.
+
+## `file-to-vtu.jl`
+### Description
+Takes a fields_... file as input from a sunset code and turns it into an xml 'unstructured node set' file that paraview can read.
+
+### Usage
+Args and inputs are as given in the script file. Care should primarily be given to the 'skip nodes' user inputs as these will remove nodes from being output based on some criteria
 
 ## `julia-package-compiler.jl`
 ### Description
