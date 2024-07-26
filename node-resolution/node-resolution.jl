@@ -61,7 +61,7 @@ function sunset_resolution_case_5(
             xticks = x[1]:0.1:x[end], yticks = [0.0, dxmin, dx0]
         )
     
-        plot!(res_plot, x, res, color = :black, label = "res", )
+        plot!(res_plot, x, res, color = :black, label = "dx", )
         plot!(res_plot, x, val1, style = :dot, linewidth = 2.0, label = "val1: dxmin", )
         plot!(res_plot, x, val2, style = :dot, linewidth = 2.0, label = "val2: dxmin to dx0, cosine", )
         plot!(res_plot, x, val3, style = :dot, linewidth = 2.0, label = "val3: dx0 to dxio, linear", )
