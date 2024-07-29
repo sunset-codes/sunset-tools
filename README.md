@@ -6,30 +6,16 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
   - [Table of Contents](#table-of-contents)
   - [Installation + Prerequisites](#installation--prerequisites)
   - [General Instructions](#general-instructions)
-  - [`animate-frames.jl`](#animate-framesjl)
+  - [`pkg-compiler.jl`](#pkg-compilerjl)
     - [Description](#description)
     - [Usage](#usage)
-  - [`init_flame_file-creator.jl`](#init_flame_file-creatorjl)
+  - [`sunset-tarball.sh`](#sunset-tarballsh)
     - [Description](#description-1)
     - [Usage](#usage-1)
-  - [`IPART-to-vtu.jl`](#ipart-to-vtujl)
+  - [`node-resolution.jl`](#node-resolutionjl)
     - [Description](#description-2)
     - [Usage](#usage-2)
-  - [`file-to-vtu.jl`](#file-to-vtujl)
-    - [Description](#description-3)
-    - [Usage](#usage-3)
-  - [`julia-package-compiler.jl`](#julia-package-compilerjl)
-    - [Description](#description-4)
-    - [Usage](#usage-4)
-  - [`node-resolution.jl`](#node-resolutionjl)
-    - [Description](#description-5)
-    - [Usage](#usage-5)
-  - [`plot-nodes.jl`](#plot-nodesjl)
-    - [Description](#description-6)
-    - [Usage](#usage-6)
-  - [`sunset-tarball.sh`](#sunset-tarballsh)
-    - [Description](#description-7)
-    - [Usage](#usage-7)
+  - [Other Scripts](#other-scripts)
 
 ## Installation + Prerequisites
 - Linux
@@ -41,13 +27,9 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
   - `Revise.jl`
   - `Plots.jl`
   - `PyPlot.jl`
-  - `VideoIO.jl`
-  - `ProgressMeter.jl`
   - `PackageCompiler.jl`
-  - `Printf.jl`
   - `Dates.jl`
-  - `Random.jl`
-  - `LaTeXStrings.jl`
+  - All of those which are required by [SunsetFileIO](https://github.com/sunset-codes/SunsetFileIO)
 
 Oh and you should probably install [sunset-flames](https://github.com/sunset-codes/sunset-flames), as this repo is just a tool set for that CFD software.
 
@@ -72,40 +54,12 @@ Sometimes these julia scripts need to be run in interactive mode (pretty much ju
 julia -i -- <julia script path> <arguments>
 ```
 
-## `animate-frames.jl`
-### Description
-Stitches together images into an animation.
-
-### Usage
-No extra info yet.
-
-## `init_flame_file-creator.jl`
-### Description
-Takes the output `data_out/flame...` data from a 1D SUNSET flame simulation and turns it into a `init_flame.in` file.
-
-### Usage
-No extra info yet.
-
-## `IPART-to-vtu.jl`
-### Description
-Takes an IPART file as input from a sunset code and turns it into an xml 'unstructured node set' file that paraview can read.
-
-### Usage
-No extra info yet.
-
-## `file-to-vtu.jl`
-### Description
-Takes a fields_... file as input from a sunset code and turns it into an xml 'unstructured node set' file that paraview can read.
-
-### Usage
-Args and inputs are as given in the script file. Care should primarily be given to the 'skip nodes' user inputs as these will remove nodes from being output based on some criteria
-
-## `julia-package-compiler.jl`
+## `pkg-compiler.jl`
 ### Description
 Precompiles Julia packages into their sysimages (`.so` files). They can be used quickly when running Julia scripts with the `-J` flag, e.g.
 
 ```bash
-julia -J <path to compiled package> -- <julia script path> <arguments>
+julia -J sysimages/PackageCompiler.so -- pkg-compiler.jl <arguments>
 ```
 
 Uses the `PackageCompiler.jl` package to do this.
@@ -115,13 +69,33 @@ Note that the usage of these precompiled package sysimages only makes scripts *s
 ### Usage
 No extra info yet.
 
+## `sunset-tarball.sh`
+### Description
+This script just takes the root directory and everything inside of it and makes a tar file out of that. The tar file is placed in the `sunset-storage` subdirectory. It could be adapted in the future to just be a julia script which takes the root directory path as an argument. It works fine for now though.
+
+### Usage
+Must be run at the root of the `sunset_code` directory that you are working in. For easiest usage, use the alias:
+
+```bash
+export sunset_storage_dir="<path to sunset-storage dir>"
+alias sunset-tar='<path to this repo>/sunset-tarball/sunset-tarball.sh'
+```
+
+To unpack the tarball, run the command:
+
+```bash
+tar -zxvf <path to tarball>
+```
+
+in the location you want the `sunset_code` directory to appear.
+
 ## `node-resolution.jl`
 ### Description
 An interactive script for finding appropriate resolution parameters before generating a node set.
 
 Currently only case 5 is implemented for a quasi 1D laminar flame.
 
-Results from this script can be verified using the [`plot-nodes.jl`](#plot-nodesjl) script.
+Results from this script can be verified using `plot-nodes.jl`.
 
 ### Usage
 This script is best used differently to a typical julia script. Instead what we do is enter an interactive julia session (called the REPL) via:
@@ -150,41 +124,9 @@ julia> sunset_resolution_case_5(-0.5:0.01:0.5, dxmin * 10, dxmin, 0.15, 0.00; b0
 
 Because we are in an interactive environment, not only will this function return a resolution array, it will also plot the resolution (and other relevant values, as used in sunset-flames `source/gen/datclass.f90` script) against x. This plotting is incredibly useful to quickly modify the input parameters (e.g. b0, b1) to find values which best suit our needs.
 
-## `plot-nodes.jl`
-### Description
-Plots nodes stored in Jack's `IPART` format using the PyPlot backend.
+## Other Scripts
+The rest of these scripts should be relatively self-explanatory, you run them like a usual script (always interactively, so that you as the user can give input without needing to enter it at the command line) and all the rigmarole of using SunsetFileIO yourself should be hidden.
 
-This script is optimized for performance (so it can work on e.g. 100,000 nodes without being the worst thing ever), so should be used in conjunction with a sysimage as described above. In particular, this script uses the `Plots.jl` and `PyPlot.jl` packages. You can use these via:
+Of course, if you wish SunsetFileIO is designed to be scripted on, so feel free to create your own scripts and add them here.
 
-```bash
-# This creates the `Plots_PyPlot.so` sysimage
-julia -- <path to this repo>/julia-package-compiler.jl Plots PyPlot
-
-# This uses that sysimage to make the `plot-nodes.jl` script *start faster*
-# The key part is the usage of the `-J` flag for `.so` files
-# Also notice the `-i` flag is needed to view the plot
-julia -i -J <path to repo>/julia-package-compilation/sysimages/Plots_PyPlot.so -- <path to repo>/plot-nodes/plot-nodes.jl <ARGS as listed in plot-nodes.jl>
-```
-
-### Usage
-This creates a plot, so the `-i` flag is needed.
-
-## `sunset-tarball.sh`
-### Description
-This script just takes the root directory and everything inside of it and makes a tar file out of that. The tar file is placed in the `sunset-storage` subdirectory. It could be adapted in the future to just be a julia script which takes the root directory path as an argument. It works fine for now though.
-
-### Usage
-Must be run at the root of the `sunset_code` directory that you are working in. For easiest usage, use the alias:
-
-```bash
-export sunset_storage_dir="<path to sunset-storage dir>"
-alias sunset-tar='<path to this repo>/sunset-tarball/sunset-tarball.sh'
-```
-
-To unpack the tarball, run the command:
-
-```bash
-tar -zxvf <path to tarball>
-```
-
-in the location you want the `sunset_code` directory to appear.
+If you have any questions, feel free to ask!
