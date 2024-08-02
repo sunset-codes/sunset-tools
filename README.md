@@ -4,7 +4,7 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
 ## Table of Contents
 - [sunset-tools](#sunset-tools)
   - [Table of Contents](#table-of-contents)
-  - [Installation + Prerequisites](#installation--prerequisites)
+  - [Prerequisites](#prerequisites)
   - [General Instructions](#general-instructions)
   - [`pkg-compiler.jl`](#pkg-compilerjl)
     - [Description](#description)
@@ -17,7 +17,7 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
     - [Usage](#usage-2)
   - [Other Scripts](#other-scripts)
 
-## Installation + Prerequisites
+## Prerequisites
 - Linux
   - If you're on Windows you can use WSL
 - Bash on linux
@@ -64,7 +64,7 @@ julia -J sysimages/PackageCompiler.so -- pkg-compiler.jl <arguments>
 
 Uses the `PackageCompiler.jl` package to do this.
 
-Note that the usage of these precompiled package sysimages only makes scripts *start faster*. It does not make them run faster overall, just removes the initial precompilation Julia has to do when you use a package for the first time after starting julia (which happens everytime if you're running scripts).
+Note that the usage of these precompiled package sysimages only makes scripts *start faster*. It does not make them run faster overall, just removes the initial hooplah Julia has to do when you use a package for the first time after starting julia (which happens everytime if you're running scripts).
 
 ### Usage
 No extra info yet.
