@@ -5,6 +5,7 @@ ARGS
 ---
 1   data_out directory path
 2   Output directory
+3   (Optional) LAYER file name prefix. Defaults to ""
 """
 
 using Printf
@@ -13,6 +14,7 @@ using SunsetFileIO
 
 arg_data_dir = ARGS[1]
 arg_out_dir = ARGS[2]
+arg_out_name_prefix = length(ARGS) > 2 ? ARGS[3] : ""
 
 if !isdir(arg_data_dir)
     println(arg_data_dir)
@@ -58,7 +60,7 @@ for i_frame in arg_frame_start:arg_frame_end
 
     # Output to vtu file
     out_file_name = @sprintf "%04i" i_frame - 1
-    out_file_name = string("ben_new_LAYER", out_file_name, ".vtu")
+    out_file_name = string(arg_out_name_prefix, "LAYER", out_file_name, ".vtu")
     out_file_path = joinpath(arg_out_dir, out_file_name)
     println("Writing nodes to ", out_file_path)
     open_and_write_vtu(out_file_path, full_set, arg_D)
