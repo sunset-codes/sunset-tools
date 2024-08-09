@@ -38,6 +38,7 @@ println("We have a total of ", length(node_set.set), " nodes")
 scale!(node_set, arg_L_char)
 
 node_indices = get_shuffle_keep_indices(node_set, arg_keep_check_f_and_args...)
+keep_indices!(node_set, node_indices)
 println("and we are writing ", length(node_set.set), " of them")
 
 if arg_do_reflect
@@ -53,6 +54,7 @@ for i_frame in arg_frame_start:arg_frame_end
 
     if arg_do_reflect
         field_set_reflected = copy_node_set(field_set)
+        reflect!(field_set_reflected, arg_reflect_p1, arg_reflect_p2)
         field_set = join_node_sets(field_set, field_set_reflected)    
     end
 
