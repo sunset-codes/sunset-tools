@@ -1,5 +1,7 @@
 """
-Creates .vtu files out of IPART files. Output files are named 'IPART.<date_time>.vtu'
+Creates .vtu files out of IPART files. Output files are named 'IPART.<date_time>.vtu'.
+
+Multithreading can be used by adding the switch "-t <# threads>" when running Julia
 
 ARGS
 ---
@@ -8,8 +10,12 @@ ARGS
 3   (Optional) LAYER file name prefix. Defaults to ""
 """
 
-using Printf
+
+using Printf, Base.Threads
 using SunsetFileIO
+
+
+printstyled(string("Started with ", nthreads(), " thread", nthreads() > 1 ? "s" : "", "\n"); color = :green)
 
 
 arg_data_dir = ARGS[1]
@@ -39,7 +45,6 @@ scale!(node_set, arg_L_char)
 
 node_indices = get_shuffle_keep_indices(node_set, arg_keep_check_f_and_args...)
 keep_indices!(node_set, node_indices)
-println("and we are writing ", length(node_set.set), " of them")
 
 if arg_do_reflect
     node_set_reflected = copy_node_set(node_set)
@@ -47,25 +52,32 @@ if arg_do_reflect
     node_set = join_node_sets(node_set, node_set_reflected)
 end
 
+println("and we are writing ", length(node_set.set), " of them")
 
-for i_frame in arg_frame_start:arg_frame_end
-    field_set = read_fields_files(arg_data_dir, arg_D, arg_Y, arg_n_cores, i_frame)
-    keep_indices!(field_set, node_indices)
 
-    if arg_do_reflect
-        field_set_reflected = copy_node_set(field_set)
-        reflect!(field_set_reflected, arg_reflect_p1, arg_reflect_p2)
-        field_set = join_node_sets(field_set, field_set_reflected)    
+framepool = arg_frame_start:arg_frame_end
+@threads for t in 1:nthreads()
+    t_framepool = filter(i_frame -> (i_frame + t - 1) % nthreads() == 0, framepool)
+    for i_frame in t_framepool
+        field_set = read_fields_files(arg_data_dir, arg_D, arg_Y, arg_n_cores, i_frame)
+        keep_indices!(field_set, node_indices)
+
+        if arg_do_reflect
+            field_set_reflected = copy_node_set(field_set)
+            reflect!(field_set_reflected, arg_reflect_p1, arg_reflect_p2)
+            field_set = join_node_sets(field_set, field_set_reflected)    
+        end
+
+        full_set = stitch_node_sets(node_set, field_set)
+
+        # Output to vtu file
+        out_file_name = @sprintf "%04i" i_frame - 1
+        out_file_name = string(arg_out_name_prefix, "LAYER", out_file_name, ".vtu")
+        out_file_path = joinpath(arg_out_dir, out_file_name)
+        println("thread = ", threadid(), "\tframe = ", i_frame, "\tWriting nodes to ", out_file_path)
+        open_and_write_vtu(out_file_path, full_set)
     end
-
-    full_set = stitch_node_sets(node_set, field_set)
-
-    # Output to vtu file
-    out_file_name = @sprintf "%04i" i_frame - 1
-    out_file_name = string(arg_out_name_prefix, "LAYER", out_file_name, ".vtu")
-    out_file_path = joinpath(arg_out_dir, out_file_name)
-    println("Writing nodes to ", out_file_path)
-    open_and_write_vtu(out_file_path, full_set, arg_D)
 end
+
 
 exit()
