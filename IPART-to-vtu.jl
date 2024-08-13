@@ -10,10 +10,10 @@ using Dates
 using SunsetFileIO
 
 
-arg_node_file = ARGS[1]
+arg_IPART_file = ARGS[1]
 
-if !isfile(arg_node_file)
-    println(arg_node_file)
+if !isfile(arg_IPART_file)
+    println(arg_IPART_file)
     printstyled("arg_node_file is not a file, exiting.\n", color = :red)
     exit()
 end
@@ -23,7 +23,7 @@ arg_keep_check_f_and_args = ask_skip()
 (arg_L_char, ) = ask_scale()
 
 println("Reading nodes files")
-node_set = read_IPART_file(arg_node_file, arg_D, arg_n_line_skip)
+node_set = read_IPART_file(arg_IPART_file, arg_D, arg_n_line_skip)
 println("We have a total of ", length(node_set.set), " nodes")
 
 # Scale down nodes
@@ -34,9 +34,9 @@ keep_indices!(node_set, node_indices)
 println("and we are writing ", length(node_set.set), " of them")
 
 
-out_file_path = joinpath(dirname(arg_node_file), "IPART.$(Dates.now()).vtu")
+out_file_path = joinpath(dirname(arg_IPART_file), "IPART.$(Dates.now()).vtu")
 println("Writing to ", out_file_path)
 
-open_and_write_vtu(out_file_path, node_set, arg_D)
+open_and_write_vtu(out_file_path, node_set)
 
 exit()

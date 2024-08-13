@@ -6,8 +6,8 @@ Multithreading can be used by adding the switch "-t <# threads>" when running Ju
 ARGS
 ---
 1   data_out directory path
-2   Output directory
-3   (Optional) LAYER file name prefix. Defaults to ""
+2   Output directory (usually the paraview_files directory)
+3   (Optional) LAYER file name prefix. Defaults to "".
 """
 
 
@@ -15,8 +15,13 @@ using Printf, Base.Threads
 using SunsetFileIO
 
 
-printstyled(string("Started with ", nthreads(), " thread", nthreads() > 1 ? "s" : "", "\n"); color = :green)
-
+printstyled(string("Started with ", nthreads(), " thread", nthreads() > 1 ? "s" : "", ".\n"); color = :green)
+if nthreads() == 1
+    printstyled("Start with more than one thread using `julia -i "; color = :green)
+    printstyled("-t <# threads>"; color = :white, bold = true)
+    printstyled(" -- ...`.\n"; color = :green)
+end
+println()
 
 arg_data_dir = ARGS[1]
 arg_out_dir = ARGS[2]
@@ -36,10 +41,11 @@ end
 arg_keep_check_f_and_args = ask_skip()
 (arg_L_char, ) = ask_scale()
 (arg_do_reflect, arg_reflect_p1, arg_reflect_p2) = ask_reflect()
+println()
 
 println("Reading nodes files")
 node_set = read_nodes_files(arg_data_dir, arg_D, arg_n_cores)
-println("We have a total of ", length(node_set.set), " nodes")
+println("We have a total of ", length(node_set), " nodes")
 
 scale!(node_set, arg_L_char)
 
@@ -52,7 +58,7 @@ if arg_do_reflect
     node_set = join_node_sets(node_set, node_set_reflected)
 end
 
-println("and we are writing ", length(node_set.set), " of them")
+println("and we are writing ", length(node_set), " of them")
 
 
 framepool = arg_frame_start:arg_frame_end
