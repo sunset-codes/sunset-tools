@@ -22,19 +22,18 @@ end
 (arg_D, arg_n_line_skip) = ask_file_type("IPART")
 arg_keep_check_f_and_args = ask_skip()
 (arg_L_char, ) = ask_scale()
+println()
 
 println("Reading IPART file")
 node_set = read_IPART_file(arg_node_file, arg_D, arg_n_line_skip)
-println("We have a total of ", length(node_set.set), " nodes")
+println("We have a total of ", length(node_set), " nodes")
 
 scale!(node_set, arg_L_char)
 
 node_indices = get_shuffle_keep_indices(node_set, arg_keep_check_f_and_args...)
 keep_indices!(node_set, node_indices)
-println("and we are drawing ", length(node_set.set), " of them")
+println("and we are drawing ", length(node_set), " of them")
 
-
-println("getting node colours")
 
 type_transformer(type) = type >= 0 ? type : -1
 
@@ -60,8 +59,6 @@ for (node_type, _) in type_dict
     push!(node_type_sets, node_type_set)
 end
 
-println("plotting ", length(node_set.set)," nodes")
-
 x_values = get_field_by_name(node_set, "x")
 y_values = get_field_by_name(node_set, "y")
 x_min = minimum(x_values)
@@ -74,11 +71,20 @@ frame_margin = 0.2 * max(x_size, y_size)
 x_limits = (x_min - frame_margin, x_max + frame_margin)
 y_limits = (y_min - frame_margin, y_max + frame_margin)
 
-tick_step = 0.2 * arg_L_char
+tick_step = 0.1 * arg_L_char
 round_step(x, step) = round(x / step) * step
 xt1 = round_step(x_limits[1], tick_step)
 yt1 = round_step(y_limits[1], tick_step)
 
+marker_colour_to_print_colour = Dict(
+    :grey => :white,
+    :green => :green,
+    :blue => :blue,
+    :red => :red,
+    :orange => :yellow,
+)
+
+printstyled("\n# Nodes\tColour\tNode Type\n"; color = :white, bold = true, italic = true)
 node_plot = scatter(
     aspect_ratio = :equal, legend = arg_show_legend,
     xlimits = x_limits, ylimits = y_limits, xlabel = "\$x\$", ylabel = "\$y\$",
@@ -87,17 +93,20 @@ node_plot = scatter(
     xtickfontrotation = 90.0
 )
 for node_type_set in node_type_sets
-    if length(node_type_set.set) == 0
+    if length(node_type_set) == 0
         continue
     end
 
-    type_tuple = type_dict[type_transformer(get_field_by_name(node_type_set.set[1], "type"))]
+    type_tuple = type_dict[type_transformer(get_field_by_name(node_type_set, "type")[1])]
     marker_colour = type_tuple[1]
     label = type_tuple[2]
-    println(Symbol(marker_colour), " ", label)
+    printstyled(
+        string(length(node_type_set), "\t", Symbol(marker_colour), "\t", label, "\n");
+        color = marker_colour_to_print_colour[marker_colour],
+        bold = true
+    )
     x = get_field_by_name(node_type_set, "x")
     y = get_field_by_name(node_type_set, "y")
-    println(length(x))
     scatter!(
         node_plot,
         x, y,
@@ -107,8 +116,8 @@ for node_type_set in node_type_sets
 end
 
 if isinteractive()
+    println()
     display(node_plot)
-
     println("press Enter to close Julia and the plot")
     readline()
     exit()
