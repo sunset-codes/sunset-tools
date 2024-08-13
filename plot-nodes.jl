@@ -115,12 +115,8 @@ for node_type_set in node_type_sets
     )
 end
 
-if isinteractive()
-    println()
-    display(node_plot)
-    println("press Enter to close Julia and the plot")
-    readline()
-    exit()
-else
-    savefig(node_plot, "plot-nodes_$(Dates.now()).png")
-end
+println()
+display(node_plot)
+println("press Enter to close Julia and the plot")
+readline()
+exit()
