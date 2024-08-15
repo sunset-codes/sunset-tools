@@ -9,7 +9,7 @@ Tools to help use the [sunset-flames](https://github.com/sunset-codes/sunset-fla
   - [`pkg-compiler.jl`](#pkg-compilerjl)
     - [Description](#description)
     - [Usage](#usage)
-  - [`sunset-tarball.sh`](#sunset-tarballsh)
+  - [`sunset-tarball.jl` and `unpack-tarball.sh`](#sunset-tarballjl-and-unpack-tarballsh)
     - [Description](#description-1)
     - [Usage](#usage-1)
   - [`node-resolution.jl`](#node-resolutionjl)
@@ -69,19 +69,27 @@ Note that the usage of these precompiled package sysimages only makes scripts *s
 ### Usage
 No extra info yet.
 
-## `sunset-tarball.sh`
+## `sunset-tarball.jl` and `unpack-tarball.sh`
 ### Description
-This script just takes the root directory and everything inside of it and makes a tar file out of that. The tar file is placed in the `sunset-storage` subdirectory. It could be adapted in the future to just be a julia script which takes the root directory path as an argument. It works fine for now though.
+Creates two tarballs containing that directory and everything in it: one containing everything and another
+only containing the contents needed to run that simulation from the beginning.
+
 
 ### Usage
-Must be run at the root of the `sunset_code` directory that you are working in. For easiest usage, use the alias:
+Must be run at the root of the e.g. `sunset_code` directory that you are working in. For easiest usage, use the alias:
 
 ```bash
 export sunset_storage_dir="<path to sunset-storage dir>"
-alias sunset-tar='<path to this repo>/sunset-tarball/sunset-tarball.sh'
+alias sunset-tarball='julia -- <path to sunset-tarball.jl>'
 ```
 
-To unpack the tarball, run the command:
+To extract this tarball at some location, simply run the command
+
+```bash
+<path to unpack-tarball.sh> <tarball file> <directory to unpack into>
+```
+
+This script effectively just runs the command
 
 ```bash
 tar -zxvf <path to tarball>
