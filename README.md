@@ -45,8 +45,10 @@ To run a bash file, do:
 To run most julia scripts, do:
 
 ```bash
-julia -- <julia script path> <arguments>
+julia -e 'include("/path/to/sunset-startup.jl")' -- <julia script path> <arguments>
 ```
+
+The `-e` flag will run the julia code `include...`, which runs the code in `sunset-startup.jl` before running the script code. This can be skipped if you instead add `include("/path/to/sunset-startup.jl")` to your [`startup.jl` file](https://docs.julialang.org/en/v1/manual/command-line-interface/#Startup-file). From now on I will omit this flag, assuming that you've done this.
 
 Sometimes these julia scripts need to be run in interactive mode (pretty much just when you are getting a plot display window to show). To do this, add the `-i` flag:
 

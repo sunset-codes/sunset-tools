@@ -1,4 +1,8 @@
 """
+Because sunset-startup.jl provides the plotting defaults that I use/suggest, this will
+only work if you have correctly included / used the startup file `./sunset-startup.jl`
+(specifically because of the `default(...)` line, below).
+
 Arguments:
 1   IPART file path
 2   Show legend?
@@ -8,6 +12,9 @@ using Plots, Dates
 using SunsetFileIO
 
 pyplot()
+
+default(; reset = true, plots_defaults(PLOTS_DEFAULTS_PYPLOT)...)
+
 
 arg_node_file = ARGS[1]
 arg_show_legend = tryparse(Bool, ARGS[2])
@@ -34,9 +41,7 @@ node_indices = get_shuffle_keep_indices(node_set, arg_keep_check_f_and_args...)
 keep_indices!(node_set, node_indices)
 println("and we are drawing ", length(node_set), " of them")
 
-
 type_transformer(type) = type >= 0 ? type : -1
-
 type_dict = Dict(
     999 => (:grey, "Unstructured Nodes"),
     0   => (:green, "Wall Nodes"),
@@ -45,19 +50,8 @@ type_dict = Dict(
     -1  => (:orange, "Finite Difference Nodes"),
 )
 
-# Get n vectors, separating the node set into several by their type
-function keep_check_type(node_set, indices, type_to_keep)
-    type_values = get_field_by_name(node_set, "type")[indices]
-    keep_values = [type_transformer(type) == type_to_keep for type in type_values]
-    return keep_values
-end
+node_type_sets = NodeSet[filter(node -> type_transformer(node[1, "type"]) == node_type, node_set) for (node_type, _) in type_dict]
 
-node_type_sets = NodeSet[]
-for (node_type, _) in type_dict
-    indices = get_shuffle_keep_indices(node_set, (keep_check_type, (node_type, )))
-    node_type_set = keep_indices(node_set, indices)
-    push!(node_type_sets, node_type_set)
-end
 
 x_values = get_field_by_name(node_set, "x")
 y_values = get_field_by_name(node_set, "y")
@@ -76,43 +70,36 @@ round_step(x, step) = round(x / step) * step
 xt1 = round_step(x_limits[1], tick_step)
 yt1 = round_step(y_limits[1], tick_step)
 
-marker_colour_to_print_colour = Dict(
-    :grey => :white,
-    :green => :green,
-    :blue => :blue,
-    :red => :red,
-    :orange => :yellow,
-)
-
 printstyled("\n# Nodes\tColour\tNode Type\n"; color = :white, bold = true, italic = true)
+
 node_plot = scatter(
-    aspect_ratio = :equal, legend = arg_show_legend,
+    size = (1000, 750), aspect_ratio = :equal, legend = arg_show_legend ? (0, 1) : false,
     xlimits = x_limits, ylimits = y_limits, xlabel = "\$x\$", ylabel = "\$y\$",
-    size = (1000, 750),
     xticks = xt1:tick_step:x_limits[2], yticks = yt1:tick_step:y_limits[2],
     xtickfontrotation = 90.0
 )
+
+marker_colour_to_print_colour = Dict(
+    :grey   => :white,
+    :green  => :green,
+    :blue   => :blue,
+    :red    => :red,
+    :orange => :yellow,
+)
+
 for node_type_set in node_type_sets
     if length(node_type_set) == 0
         continue
     end
 
-    type_tuple = type_dict[type_transformer(get_field_by_name(node_type_set, "type")[1])]
+    type_tuple = type_dict[type_transformer(node_type_set[1, "type"])]
     marker_colour = type_tuple[1]
     label = type_tuple[2]
     printstyled(
         string(length(node_type_set), "\t", Symbol(marker_colour), "\t", label, "\n");
-        color = marker_colour_to_print_colour[marker_colour],
-        bold = true
+        color = marker_colour_to_print_colour[marker_colour], bold = true
     )
-    x = get_field_by_name(node_type_set, "x")
-    y = get_field_by_name(node_type_set, "y")
-    scatter!(
-        node_plot,
-        x, y,
-        markercolor = marker_colour,
-        markerstrokewidth = 0.2, label = label,
-    )
+    scatter!(node_plot, node_type_set["x"], node_type_set["y"], markercolor = marker_colour, markersize = 2.5, markerstrokewidth = 0.15, label = label,)
 end
 
 println()
