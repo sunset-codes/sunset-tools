@@ -6,20 +6,20 @@ println()
 using Measures
 
 const PLOTS_DEFAULTS_GR = Dict(
-    :titlefont => (10, "Computer Modern"),
-    :legendfont => (8, "Computer Modern"),
-    :guidefont => "Computer Modern",
-    :tickfont => "Computer Modern",
+    :titlefont => (8, "Computer Modern"),
+    :legendfont => (6, "Computer Modern"),
+    :guidefont => (8, "Computer Modern"),
+    :tickfont => (8, "Computer Modern"),
     :bottommargin => -7mm,
     :leftmargin => -8mm,
     :legend => (0.1, 1.1),              # Legend in gr has coords 0 -> 1 from left/bottom to right/top of frame, anchored on the middle of the legend, so ticks often get covered
 )
 
 const PLOTS_DEFAULTS_PYPLOT = Dict(
-    :titlefont => (10, "cmr10"),
-    :legendfont => (8, "cmr10"),
-    :guidefont => "cmr10",
-    :tickfont => "serif",
+    :titlefont => (8, "cmr10"),
+    :legendfont => (6, "cmr10"),
+    :guidefont => (8, "cmr10"),
+    :tickfont => (8, "serif"),
     :bottommargin => 0mm,
     :leftmargin => 0mm,
     :legend => (0, 1),              # Legend in pyplot has coords 0 -> 1 from left/bottom to right/top of frame, anchored on the bottom left of the legend
