@@ -1,5 +1,5 @@
 """
-Creates .vtu files out of IPART files. Output files are named 'IPART.<date_time>.vtu'.
+Creates .vtu files out of fields_*** files.
 
 Multithreading can be used by adding the switch "-t <# threads>" when running Julia
 
@@ -7,7 +7,8 @@ ARGS
 ---
 1   data_out directory path
 2   Output directory (usually the paraview_files directory)
-3   (Optional) LAYER file name prefix. Defaults to "".
+3   Do the fields_****** files contain production rate data (after the mass fraction, Y, data)?
+4   (Optional) LAYER file name prefix. Defaults to "".
 """
 
 
@@ -25,7 +26,8 @@ println()
 
 arg_data_dir = ARGS[1]
 arg_out_dir = ARGS[2]
-arg_out_name_prefix = length(ARGS) > 2 ? ARGS[3] : ""
+arg_has_ω = parse(Bool, ARGS[3])
+arg_out_name_prefix = length(ARGS) > 3 ? ARGS[4] : ""
 
 if !isdir(arg_data_dir)
     println(arg_data_dir)
@@ -52,12 +54,6 @@ scale!(node_set, arg_L_char)
 node_indices = get_shuffle_keep_indices(node_set, arg_keep_check_f_and_args...)
 keep_indices!(node_set, node_indices)
 
-if arg_do_reflect
-    node_set_reflected = copy_node_set(node_set)
-    reflect!(node_set_reflected, arg_reflect_p1, arg_reflect_p2)
-    node_set = join_node_sets(node_set, node_set_reflected)
-end
-
 println("and we are writing ", length(node_set), " of them")
 
 
@@ -65,23 +61,27 @@ framepool = arg_frame_start:arg_frame_end
 @threads for t in 1:nthreads()
     t_framepool = filter(i_frame -> (i_frame + t - 1) % nthreads() == 0, framepool)
     for i_frame in t_framepool
-        field_set = read_fields_files(arg_data_dir, arg_D, arg_Y, arg_n_cores, i_frame)
-        keep_indices!(field_set, node_indices)
-
-        if arg_do_reflect
-            field_set_reflected = copy_node_set(field_set)
-            reflect!(field_set_reflected, arg_reflect_p1, arg_reflect_p2)
-            field_set = join_node_sets(field_set, field_set_reflected)    
+        if !all([isfile(fields_file_path(arg_data_dir, i_core, i_frame)) for i_core in 0:(arg_n_cores - 1)])
+            println("Frame $(i_frame) not found")
+            continue
         end
-
+        field_set = read_fields_files(arg_data_dir, arg_D, arg_Y, arg_n_cores, i_frame; has_ω = arg_has_ω)
+        keep_indices!(field_set, node_indices)
         full_set = stitch_node_sets(node_set, field_set)
+
+        # Switch [0, 2π] -> [-π, π]
+        keep_indices!(full_set, findall(>=(0.0), full_set["y"]))
+        SunsetFileIO.translate!(full_set, [0.0, -(0.1 * 4.0 / 2) * arg_L_char])
+        field_set_reflected = copy_node_set(full_set)
+        reflect!(field_set_reflected, [0.0, 0.0], [1.0, 0.0])
+        full_set_reflect = join_node_sets(full_set, field_set_reflected)    
 
         # Output to vtu file
         out_file_name = @sprintf "%04i" i_frame - 1
         out_file_name = string(arg_out_name_prefix, "LAYER", out_file_name, ".vtu")
         out_file_path = joinpath(arg_out_dir, out_file_name)
         println("thread = ", threadid(), "\tframe = ", i_frame, "\tWriting nodes to ", out_file_path)
-        open_and_write_vtu(out_file_path, full_set)
+        open_and_write_vtu(out_file_path, full_set_reflect)
     end
 end
 

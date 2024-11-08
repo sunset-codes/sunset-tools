@@ -1,4 +1,6 @@
-*paraview_files/*
-*data_out/*
-
-*.git
+*LAYER*
+*/data_out/statistics/!(.gitignore)
+*fields*
+*flame*
+*nodes*
+*time.out

@@ -29,7 +29,7 @@ df = DateFormat("yyyy-mm-dd_HHMM")
 dt = Dates.format(now(), df)
 
 storage_path = joinpath(arg_storage_dir, "sunset_NO-DATA_$(arg_storage_name)_$(dt).tar.gz")
-run(`tar --exclude-from=$(joinpath(script_dir, ".tar-excludes")) -zcvf $storage_path "../$(current_dir)/"`)
+run(`tar --exclude-from=$(joinpath(script_dir, ".tar-excludes")) -zcvf $storage_path "../$(current_dir)/."`)
 
 storage_path = joinpath(arg_storage_dir, "sunset_$(arg_storage_name)_$(dt).tar.gz")
-run(`tar --exclude="*.git*" -zcvf $storage_path "../$(current_dir)/"`)
+run(`tar -zcvf $storage_path "../$(current_dir)/."`)

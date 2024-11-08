@@ -11,9 +11,7 @@ Arguments:
 using Plots, Dates
 using SunsetFileIO
 
-pyplot()
-
-default(; reset = true, plots_defaults(PLOTS_DEFAULTS_PYPLOT)...)
+backend_pyplot(; grid = true)
 
 
 arg_node_file = ARGS[1]
