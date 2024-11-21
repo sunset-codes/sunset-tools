@@ -8,7 +8,8 @@ ARGS
 1   data_out directory path
 2   Output directory (usually the paraview_files directory)
 3   Do the fields_****** files contain production rate data (after the mass fraction, Y, data)?
-4   (Optional) LAYER file name prefix. Defaults to "".
+4   Do the fields_****** files contain volume data?
+5   (Optional) LAYER file name prefix. Defaults to "".
 """
 
 
@@ -27,7 +28,8 @@ println()
 arg_data_dir = ARGS[1]
 arg_out_dir = ARGS[2]
 arg_has_ω = parse(Bool, ARGS[3])
-arg_out_name_prefix = length(ARGS) > 3 ? ARGS[4] : ""
+arg_has_vol = parse(Bool, ARGS[4])
+arg_out_name_prefix = length(ARGS) > 4 ? ARGS[5] : ""
 
 if !isdir(arg_data_dir)
     println(arg_data_dir)
@@ -65,12 +67,12 @@ framepool = arg_frame_start:arg_frame_end
             println("Frame $(i_frame) not found")
             continue
         end
-        field_set = read_fields_files(arg_data_dir, arg_D, arg_Y, arg_n_cores, i_frame; has_ω = arg_has_ω)
+        field_set = read_fields_files(arg_data_dir, arg_D, arg_Y, arg_n_cores, i_frame; has_ω = arg_has_ω, has_vol = arg_has_vol)
         keep_indices!(field_set, node_indices)
         full_set = stitch_node_sets(node_set, field_set)
 
         # Switch [0, 2π] -> [-π, π]
-        keep_indices!(full_set, findall(>=(0.0), full_set["y"]))
+        # keep_indices!(full_set, findall(>=(0.0), full_set["y"]))
         SunsetFileIO.translate!(full_set, [0.0, -(0.1 * 4.0 / 2) * arg_L_char])
         field_set_reflected = copy_node_set(full_set)
         reflect!(field_set_reflected, [0.0, 0.0], [1.0, 0.0])
