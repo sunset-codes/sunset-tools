@@ -1,8 +1,4 @@
-
-
 using Plots
-
-pyplot()
 
 # function integrate2D(x, y)
 #     sum = 0.0
@@ -22,6 +18,7 @@ function sunset_resolution_case_5(
     b1 = 40.0,
     b2 = 50.0,
 )
+    backend_pyplot(; grid = true)
 
     dxio = 1.0 * dx0
     t2 = x .- temp2
@@ -57,8 +54,8 @@ function sunset_resolution_case_5(
 
     if isinteractive()
         res_plot = plot(
-            size = (1000, 800), legend = (1, 0.8),
-            xticks = x[1]:0.1:x[end], yticks = [0.0, dxmin, dx0]
+            size = (1500, 600), legend = (1, 0.5),
+            xticks = x[1]:2.0:x[end], yticks = [0.0, dxmin, dx0]
         )
     
         plot!(res_plot, x, res, color = :black, label = "dx", )
@@ -66,8 +63,10 @@ function sunset_resolution_case_5(
         plot!(res_plot, x, val2, style = :dot, linewidth = 2.0, label = "val2: dxmin to dx0, cosine", )
         plot!(res_plot, x, val3, style = :dot, linewidth = 2.0, label = "val3: dx0 to dxio, linear", )
         plot!(res_plot, x, val4, style = :dot, linewidth = 2.0, label = "val4: dxio", )
-        plot!(res_plot, x, d2b_local .* dxmin, style = :dash, linewidth = 2.0, label = "d2b_local")
-    
+        # plot!(res_plot, x, d2b_local .* dxmin, style = :dash, linewidth = 2.0, label = "d2b_local")
+        xticks_res = xticks(res_plot)[1]
+        xticks!(res_plot, [xticks_res[1]..., 0.0])
+
         display(res_plot)
     end
 

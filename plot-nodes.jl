@@ -11,7 +11,55 @@ Arguments:
 using Plots, Dates
 using SunsetFileIO
 
+printstyled("Plots startup contains plotting defaults and Measures.jl.\n"; bold = true, color = :yellow)
+println()
+
+using Measures
+
+const PLOTS_DEFAULTS_PYPLOT = Dict(
+    :titlefont => (8, "serif"),
+    :legendfont => (8, "serif"),
+    :guidefont => (8, "serif"),
+    :tickfont => (8, "serif"),
+    :colorbar_tickfontsize => 8,
+    :colorbar_tickfontfamily => "serif",
+    :colorbar_titlefont => (8, "serif"),
+    :bottommargin => 0mm,
+    :leftmargin => 0mm,
+    :legend => (0, 1),              # Legend in pyplot has coords 0 -> 1 from left/bottom to right/top of frame, anchored on the bottom left of the legend
+)
+
+const PLOTS_GRID_ON = Dict(
+    :grid => true,
+    :gridalpha => 1,
+    :gridstyle => :dot,
+    :gridwidth => 0.5,
+)
+
+const PLOTS_GRID_OFF = Dict(
+    :grid => false,
+)
+
+plots_defaults(backend_dict, grid_dict) = Dict(
+    # Non-backend specific
+    :size => (700, 400),
+    :frame => :box,
+    :thickness_scaling => 2.0,
+    :grid => false,
+    # Backend specific
+    backend_dict...,
+    # Choose grid or no grid_dict
+    grid_dict...,
+)
+
+function backend_pyplot(; grid = false)
+    pyplot()
+    default(; reset = true, plots_defaults(PLOTS_DEFAULTS_PYPLOT, grid ? PLOTS_GRID_ON : PLOTS_GRID_OFF)...)
+end
+
 backend_pyplot(; grid = true)
+
+
 
 
 arg_node_file = ARGS[1]
@@ -63,7 +111,7 @@ frame_margin = 0.2 * max(x_size, y_size)
 x_limits = (x_min - frame_margin, x_max + frame_margin)
 y_limits = (y_min - frame_margin, y_max + frame_margin)
 
-tick_step = 0.1 * arg_L_char
+tick_step = 1.0 * arg_L_char
 round_step(x, step) = round(x / step) * step
 xt1 = round_step(x_limits[1], tick_step)
 yt1 = round_step(y_limits[1], tick_step)

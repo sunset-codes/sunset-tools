@@ -44,14 +44,12 @@ end
 (arg_D, arg_Y, arg_n_cores, (arg_frame_start, arg_frame_end)) = ask_file_type("many fields")
 arg_keep_check_f_and_args = ask_skip()
 (arg_L_char, ) = ask_scale()
-(arg_do_reflect, arg_reflect_p1, arg_reflect_p2) = ask_reflect()
+# (arg_do_reflect, ) = ask_reflect()
 println()
 
 println("Reading nodes files")
 node_set = read_nodes_files(arg_data_dir, arg_D, arg_n_cores)
 println("We have a total of ", length(node_set), " nodes")
-
-scale!(node_set, arg_L_char)
 
 node_indices = get_shuffle_keep_indices(node_set, arg_keep_check_f_and_args...)
 keep_indices!(node_set, node_indices)
@@ -70,20 +68,22 @@ framepool = arg_frame_start:arg_frame_end
         field_set = read_fields_files(arg_data_dir, arg_D, arg_Y, arg_n_cores, i_frame; has_ω = arg_has_ω, has_vol = arg_has_vol)
         keep_indices!(field_set, node_indices)
         full_set = stitch_node_sets(node_set, field_set)
+        scale!(full_set, arg_L_char)
 
         # Switch [0, 2π] -> [-π, π]
         # keep_indices!(full_set, findall(>=(0.0), full_set["y"]))
-        SunsetFileIO.translate!(full_set, [0.0, -(0.1 * 4.0 / 2) * arg_L_char])
-        field_set_reflected = copy_node_set(full_set)
-        reflect!(field_set_reflected, [0.0, 0.0], [1.0, 0.0])
-        full_set_reflect = join_node_sets(full_set, field_set_reflected)    
+        # SunsetFileIO.translate!(full_set, [0.0, -(0.1 * 3.0 / 2) * arg_L_char])
+        # field_set_reflected = copy_node_set(full_set)
+        # reflect!(field_set_reflected, [0.0, 0.0], [1.0, 0.0])
+        # full_set_reflect = join_node_sets(full_set, field_set_reflected)    
 
         # Output to vtu file
         out_file_name = @sprintf "%04i" i_frame - 1
         out_file_name = string(arg_out_name_prefix, "LAYER", out_file_name, ".vtu")
         out_file_path = joinpath(arg_out_dir, out_file_name)
         println("thread = ", threadid(), "\tframe = ", i_frame, "\tWriting nodes to ", out_file_path)
-        open_and_write_vtu(out_file_path, full_set_reflect)
+        # open_and_write_vtu(out_file_path, full_set_reflect)
+        open_and_write_vtu(out_file_path, full_set)
     end
 end
 
