@@ -48,7 +48,7 @@ println("Writing ", length(node_set), " nodes to file: ", joinpath(arg_out_dir, 
 
 # Converts from flame usual 'e' based scientific notation to Fortran's weird 'd' based one
 sprintf(val :: Float64) = begin
-    str = @sprintf "%.7e" val
+    str = @sprintf "%.15e" val
     replace(str, "e" => "d")
 end
 
