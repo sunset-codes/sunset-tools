@@ -9,7 +9,9 @@ ARGS
 2   Output directory (usually the paraview_files directory)
 3   Do the fields_****** files contain production rate data (after the mass fraction, Y, data)?
 4   Do the fields_****** files contain volume data?
-5   (Optional) LAYER file name prefix. Defaults to "".
+5   Do the nodes_****** files contain index data?
+6   Do the nodes_****** files contain h_small data?
+7   (Optional) LAYER file name prefix. Defaults to "".
 """
 
 
@@ -29,7 +31,9 @@ arg_data_dir = ARGS[1]
 arg_out_dir = ARGS[2]
 arg_has_ω = parse(Bool, ARGS[3])
 arg_has_vol = parse(Bool, ARGS[4])
-arg_out_name_prefix = length(ARGS) > 4 ? ARGS[5] : ""
+arg_has_index = parse(Bool, ARGS[5])
+arg_has_h_small = parse(Bool, ARGS[6])
+arg_out_name_prefix = length(ARGS) > 6 ? ARGS[7] : ""
 
 if !isdir(arg_data_dir)
     println(arg_data_dir)
@@ -48,7 +52,7 @@ arg_keep_check_f_and_args = ask_skip()
 println()
 
 println("Reading nodes files")
-node_set = read_nodes_files(arg_data_dir, arg_D, arg_n_cores)
+node_set = read_nodes_files(arg_data_dir, arg_D, arg_n_cores; has_index = arg_has_index, has_h_small = arg_has_h_small)
 println("We have a total of ", length(node_set), " nodes")
 
 node_indices = get_shuffle_keep_indices(node_set, arg_keep_check_f_and_args...)
