@@ -3,7 +3,7 @@ Creates `init_flame.in` files from a selected `sunset-flames:oned` branch run. T
 the flame files for each mpi process into a single init_flame file.
 
 Script args:
-1   input data_out dir
+1   input dir
 2   output init_flame dir
 3   contains hrr information?
 4   (optional) Output file name. Defaults to `init_flame.in`.
@@ -12,7 +12,7 @@ Script args:
 using Dates, Printf
 using SunsetFileIO
 
-arg_data_dir = ARGS[1]
+arg_in_dir = ARGS[1]
 arg_out_dir = ARGS[2]
 arg_has_hrr = parse(Bool, ARGS[3])
 arg_out_name = length(ARGS) < 4 ? "init_flame.in" : ARGS[4]
@@ -27,7 +27,7 @@ end
 
 (arg_D, arg_Y, arg_n_cores, arg_i_frame) = ask_file_type("flame")
 
-node_set = read_flames_file(arg_data_dir, arg_D, arg_Y, arg_n_cores, arg_i_frame; has_hrr = arg_has_hrr)
+node_set = read_flames_file(arg_in_dir, arg_D, arg_Y, arg_n_cores, arg_i_frame; has_hrr = arg_has_hrr)
 
 # Post-process flame file
 bad_fields = setdiff(node_set.fields, init_flame_fields(arg_D, arg_Y))

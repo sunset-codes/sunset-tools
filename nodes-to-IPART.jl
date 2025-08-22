@@ -3,18 +3,18 @@ Creates IPART files out of nodes files. Output file is named 'IPART.<date_time>'
 
 ARGS
 ---
-1   data_out directory path
+1   fields directory path
 """
 
 using Dates
 using SunsetFileIO
 
 
-arg_data_dir = ARGS[1]
-if arg_data_dir[end] == '/' && length(arg_data_dir) != 1
-    arg_data_dir = arg_data_dir[1:end - 1]
+arg_fields_dir = ARGS[1]
+if arg_fields_dir[end] == '/' && length(arg_fields_dir) != 1
+    arg_fields_dir = arg_fields_dir[1:end - 1]
 end
-arg_sunset_dir = dirname(arg_data_dir)
+arg_sunset_dir = dirname(arg_fields_dir)
 
 (arg_D, arg_n_cores) = ask_file_type("nodes")
 printstyled("What scaling WAS used to create the nodes file? "; color = :blue)
@@ -26,7 +26,7 @@ cores_node_sets = NodeSet[]
 cores_n_nodes = Int64[]
 
 for i_core in 0:(arg_n_cores - 1)
-    node_set = read_nodes_file(arg_data_dir, arg_D, i_core)
+    node_set = read_nodes_file(arg_fields_dir, arg_D, i_core)
     scale!(node_set, 1 / arg_L_char)                            # Scale up(!) node sets
     keep_indices!(node_set, findall(>=(0), node_set["type"]))   # Remove FD nodes
     push!(cores_node_sets, node_set)

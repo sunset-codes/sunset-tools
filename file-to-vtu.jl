@@ -5,7 +5,7 @@ Multithreading can be used by adding the switch "-t <# threads>" when running Ju
 
 ARGS
 ---
-1   data_out directory path
+1   fields directory
 2   Output directory (usually the paraview_files directory)
 3   Do the fields_****** files contain production rate data (after the mass fraction, Y, data)?
 4   Do the fields_****** files contain volume data?
@@ -27,7 +27,7 @@ if nthreads() == 1
 end
 println()
 
-arg_data_dir = ARGS[1]
+arg_fields_dir = ARGS[1]
 arg_out_dir = ARGS[2]
 arg_has_ω = parse(Bool, ARGS[3])
 arg_has_vol = parse(Bool, ARGS[4])
@@ -35,9 +35,9 @@ arg_has_index = parse(Bool, ARGS[5])
 arg_has_h_small = parse(Bool, ARGS[6])
 arg_out_name_prefix = length(ARGS) > 6 ? ARGS[7] : ""
 
-if !isdir(arg_data_dir)
-    println(arg_data_dir)
-    printstyled("arg_data_dir is not a directory, exiting.\n", color = :red)
+if !isdir(arg_fields_dir)
+    println(arg_fields_dir)
+    printstyled("arg_fields_dir is not a directory, exiting.\n", color = :red)
     exit()
 elseif !isdir(arg_out_dir)
     println(arg_out_dir)
@@ -52,7 +52,7 @@ arg_keep_check_f_and_args = ask_skip()
 println()
 
 println("Reading nodes files")
-node_set = read_nodes_files(arg_data_dir, arg_D, arg_n_cores; has_index = arg_has_index, has_h_small = arg_has_h_small)
+node_set = read_nodes_files(arg_fields_dir, arg_D, arg_n_cores; has_index = arg_has_index, has_h_small = arg_has_h_small)
 println("We have a total of ", length(node_set), " nodes")
 
 node_indices = get_shuffle_keep_indices(node_set, arg_keep_check_f_and_args...)
@@ -65,11 +65,11 @@ framepool = arg_frame_start:arg_frame_end
 @threads for t in 1:nthreads()
     t_framepool = filter(i_frame -> (i_frame + t - 1) % nthreads() == 0, framepool)
     for i_frame in t_framepool
-        if !all([isfile(fields_file_path(arg_data_dir, i_core, i_frame)) for i_core in 0:(arg_n_cores - 1)])
+        if !all([isfile(fields_file_path(arg_fields_dir, i_core, i_frame)) for i_core in 0:(arg_n_cores - 1)])
             println("Frame $(i_frame) not found")
             continue
         end
-        field_set = read_fields_files(arg_data_dir, arg_D, arg_Y, arg_n_cores, i_frame; has_ω = arg_has_ω, has_vol = arg_has_vol)
+        field_set = read_fields_files(arg_fields_dir, arg_D, arg_Y, arg_n_cores, i_frame; has_ω = arg_has_ω, has_vol = arg_has_vol)
         keep_indices!(field_set, node_indices)
         full_set = stitch_node_sets(node_set, field_set)
         scale!(full_set, arg_L_char)
