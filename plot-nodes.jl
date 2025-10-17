@@ -11,51 +11,51 @@ Arguments:
 using Plots, Dates
 using SunsetFileIO
 
-printstyled("Plots startup contains plotting defaults and Measures.jl.\n"; bold = true, color = :yellow)
-println()
+# printstyled("Plots startup contains plotting defaults and Measures.jl.\n"; bold = true, color = :yellow)
+# println()
 
-using Measures
+# using Measures
 
-const PLOTS_DEFAULTS_PYPLOT = Dict(
-    :titlefont => (8, "serif"),
-    :legendfont => (8, "serif"),
-    :guidefont => (8, "serif"),
-    :tickfont => (8, "serif"),
-    :colorbar_tickfontsize => 8,
-    :colorbar_tickfontfamily => "serif",
-    :colorbar_titlefont => (8, "serif"),
-    :bottommargin => 0mm,
-    :leftmargin => 0mm,
-    :legend => (0, 1),              # Legend in pyplot has coords 0 -> 1 from left/bottom to right/top of frame, anchored on the bottom left of the legend
-)
+# const PLOTS_DEFAULTS_PYPLOT = Dict(
+#     :titlefont => (8, "serif"),
+#     :legendfont => (8, "serif"),
+#     :guidefont => (8, "serif"),
+#     :tickfont => (8, "serif"),
+#     :colorbar_tickfontsize => 8,
+#     :colorbar_tickfontfamily => "serif",
+#     :colorbar_titlefont => (8, "serif"),
+#     :bottommargin => 0mm,
+#     :leftmargin => 0mm,
+#     :legend => (0, 1),              # Legend in pyplot has coords 0 -> 1 from left/bottom to right/top of frame, anchored on the bottom left of the legend
+# )
 
-const PLOTS_GRID_ON = Dict(
-    :grid => true,
-    :gridalpha => 1,
-    :gridstyle => :dot,
-    :gridwidth => 0.5,
-)
+# const PLOTS_GRID_ON = Dict(
+#     :grid => true,
+#     :gridalpha => 1,
+#     :gridstyle => :dot,
+#     :gridwidth => 0.5,
+# )
 
-const PLOTS_GRID_OFF = Dict(
-    :grid => false,
-)
+# const PLOTS_GRID_OFF = Dict(
+#     :grid => false,
+# )
 
-plots_defaults(backend_dict, grid_dict) = Dict(
-    # Non-backend specific
-    :size => (700, 400),
-    :frame => :box,
-    :thickness_scaling => 2.0,
-    :grid => false,
-    # Backend specific
-    backend_dict...,
-    # Choose grid or no grid_dict
-    grid_dict...,
-)
+# plots_defaults(backend_dict, grid_dict) = Dict(
+#     # Non-backend specific
+#     :size => (700, 400),
+#     :frame => :box,
+#     :thickness_scaling => 2.0,
+#     :grid => false,
+#     # Backend specific
+#     backend_dict...,
+#     # Choose grid or no grid_dict
+#     grid_dict...,
+# )
 
-function backend_pyplot(; grid = false)
-    pyplot()
-    default(; reset = true, plots_defaults(PLOTS_DEFAULTS_PYPLOT, grid ? PLOTS_GRID_ON : PLOTS_GRID_OFF)...)
-end
+# function backend_pyplot(; grid = false)
+#     pyplot()
+#     default(; reset = true, plots_defaults(PLOTS_DEFAULTS_PYPLOT, grid ? PLOTS_GRID_ON : PLOTS_GRID_OFF)...)
+# end
 
 backend_pyplot(; grid = true)
 
@@ -78,7 +78,7 @@ arg_keep_check_f_and_args = ask_skip()
 println()
 
 println("Reading IPART file")
-node_set = read_IPART_file(arg_node_file, arg_D, arg_n_line_skip)
+node_set = read_IPART_file(arg_node_file, arg_D, arg_n_line_skip; has_index = true)
 println("We have a total of ", length(node_set), " nodes")
 
 scale!(node_set, arg_L_char)
